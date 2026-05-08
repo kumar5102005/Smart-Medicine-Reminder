@@ -181,14 +181,11 @@ The workflow logic, scheduling, integrations, and automation implementation were
 
 ---
 
-# ⭐ Demo
+# 🌟 Demo
 
-_Add your live demo link here_
+## Click Below to Watch the Full Demo
 
-Example:
-```text
-https://t.me/YourBotName
-```
+[▶ Watch Demo Video](Demo-video/demo_video.mp4)
 
 ---
 

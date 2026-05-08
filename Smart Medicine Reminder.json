@@ -1,0 +1,2137 @@
+{
+  "name": "Smart Medicine Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Main Reminder Workflow\n\n1. Runs every minute\n2. Reads Google Sheets\n3. Filters pending medicines\n4. Checks if current time matches\n5. Generates AI reminder\n6. Sends Telegram message\n7. Waits 10 minutes\n8. Sends follow-up if still pending",
+        "height": 200,
+        "width": 2700,
+        "color": 2
+      },
+      "id": "80458983-afba-4d40-bdc1-16e88c024afb",
+      "name": "Sticky Note b05c9504",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Setup Instructions\n\n**Google Sheets Structure:**\n- Name (text)\n- Medicine Name (text)\n- Time (HH:MM format, e.g., 14:30)\n- Status (Pending/Taken)\n- Telegram Chat ID (number)\n\n**Credentials Needed:**\n1. Google Sheets OAuth2\n2. Telegram Bot Token\n3. OpenAI API Key\n\n**Get Telegram Chat ID:**\nMessage @get_id_bot on Telegram",
+        "color": 5
+      },
+      "id": "cb41a96c-4edc-4d84-8801-d338645426a1",
+      "name": "Sticky Note 99fa8fc7",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## OpenAI Prompt Examples\n\n**Friendly:**\n\"Generate a warm, friendly reminder for {Name} to take {Medicine}. Keep it casual and supportive.\"\n\n**Motivational:**\n\"Create an encouraging, motivational message for {Name} about taking {Medicine}. Emphasize health benefits.\"\n\n**Strict:**\n\"Write a firm but caring reminder for {Name} to take {Medicine}. Stress the importance of adherence.\"\n\n**Current (used in workflow):**\n\"You are a friendly health assistant. Generate a personalized medicine reminder message for {Name} who needs to take {Medicine}. Make the message warm, encouraging, and motivational. Keep it under 100 characters. Add a relevant emoji.\"",
+        "height": 304,
+        "color": 6
+      },
+      "id": "1c28ac91-a0cc-4df5-be01-1bf8b3ebc063",
+      "name": "Sticky Note e0331544",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        624,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Future Improvements\n\n✅ **Implemented:**\n- AI-generated personalized messages\n- Follow-up reminders\n- User confirmation system\n- Daily summary reports\n\n🚀 **Future Features:**\n- Multiple reminders per day per user\n- Snooze functionality\n- Medicine streak tracking\n- Weekly/monthly reports\n- Medication refill reminders\n- Family member notifications\n- Voice message reminders\n- Integration with health apps",
+        "height": 288,
+        "width": 352,
+        "color": 7
+      },
+      "id": "04035dd5-b075-4632-9c43-5e0f93e0e179",
+      "name": "Sticky Note 0add2f8d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Telegram Confirmation Workflow\n\n1. Listens for Telegram messages\n2. Filters \"Taken\" messages\n3. Finds user record in sheet\n4. Updates status to \"Taken\"\n5. Sends confirmation message",
+        "height": 200,
+        "width": 1800,
+        "color": 3
+      },
+      "id": "0bc3a2ae-2392-4b77-ad6e-414d64465e8b",
+      "name": "Sticky Note b97bf567",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Daily Summary Workflow\n\n1. Runs daily at 9 PM\n2. Gets all records for the day\n3. Calculates taken vs total\n4. Sends summary to each user",
+        "height": 200,
+        "width": 1200,
+        "color": 4
+      },
+      "id": "ef3421dc-eeb2-444c-be6d-f8856b83c5fc",
+      "name": "Sticky Note a49a96ec",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "a3d10989-c4d1-426e-9ca5-529b0df8b48c",
+      "name": "Every Minute Check",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0",
+          "mode": "list",
+          "cachedResultName": "Medicine Reminder Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "276e27d7-77ef-413e-ac0b-d6703f5bad51",
+      "name": "Read Medicine Schedule",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -64,
+        416
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cYqHst4oXf5ZzOIY",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "e5336510-b8e7-4f35-831f-06bcca818d8a"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "48a196e6-a2a7-4c59-9d2e-fc45de077e42",
+      "name": "Filter Pending Only",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get current time in local timezone (Asia/Calcutta)\nconst now = new Date();\nconst currentTime = now.toLocaleTimeString('en-US', { \n  timeZone: 'Asia/Kolkata',\n  hour: '2-digit', \n  minute: '2-digit',\n  hour12: false \n});\n\nconst matchingItems = [];\nconst seenUsers = new Set();\n\nfor (const item of $input.all()) {\n  // Get medicine time and normalize it\n  let medicineTime = item.json.Time;\n  const chatId = item.json['Telegram Chat ID'];\n  \n  // Skip if we already processed this user in this run\n  if (seenUsers.has(chatId)) {\n    continue;\n  }\n  \n  // Handle different time formats\n  if (medicineTime) {\n    medicineTime = medicineTime.toString().trim();\n    \n    // If time is in format \"8:00\" convert to \"08:00\"\n    const timeParts = medicineTime.split(':');\n    if (timeParts.length === 2) {\n      const hours = timeParts[0].padStart(2, '0');\n      const minutes = timeParts[1].padStart(2, '0');\n      medicineTime = hours + ':' + minutes;\n    }\n    \n    // Compare times\n    if (currentTime === medicineTime) {\n      matchingItems.push({\n        json: {\n          ...item.json,\n          timeMatch: true,\n          currentTime: currentTime,\n          medicineTime: medicineTime\n        }\n      });\n      seenUsers.add(chatId);\n    }\n  }\n}\n\nreturn matchingItems;"
+      },
+      "id": "83d586b9-7899-4c2a-bae9-e3f24eb7c32a",
+      "name": "Check If Time Matches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a friendly health assistant. Generate a personalized medicine reminder message for {{ $json.Name }} who needs to take {{ $json[\"Medicine Name\"] }}. Make the message warm, encouraging, and motivational. Keep it under 100 characters. Add a relevant emoji. Do not include any greeting or signature, just the reminder message itself.",
+        "options": {
+          "systemMessage": "You are a helpful health assistant that creates personalized, friendly medicine reminders. Always be encouraging and supportive."
+        }
+      },
+      "id": "6c7009ae-ed4a-4f7d-8305-cc912a553201",
+      "name": "Generate Personalized Reminder",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        608,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json[\"Telegram Chat ID\"].toString() }}",
+        "text": "={{ $json.aiMessage }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "1938fa3d-0f76-4b84-950e-b43043a6f81e",
+      "name": "Send First Reminder",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        416
+      ],
+      "webhookId": "9924c890-e143-47e8-8d4e-02d88bda1d02",
+      "credentials": {
+        "telegramApi": {
+          "id": "bfVrxmMpRwDaNLug",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "id": "17ed9e25-9b51-4a28-bdd3-fa097a50c259",
+      "name": "Wait 10 Minutes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1408,
+        416
+      ],
+      "webhookId": "c37fd2c5-c673-49c7-929d-b2e85e49b95b"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0",
+          "mode": "list",
+          "cachedResultName": "Medicine Reminder Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Telegram Chat ID",
+              "lookupValue": "={{ $('Merge AI Message With Data').item.json['Telegram Chat ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b9a11fd9-78d2-48d3-85de-9b92a337d490",
+      "name": "Recheck Status After Wait",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1632,
+        416
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cYqHst4oXf5ZzOIY",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "209da9e7-baf6-48bc-96e4-b1876e8ac766"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c3e52316-2883-4949-97ff-1e9997b531fb",
+      "name": "Still Pending?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1856,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json[\"Telegram Chat ID\"].toString() }}",
+        "text": "=⚠️ Reminder: Please don't miss your {{ $json[\"Medicine Name\"] }}!\n\nYour health is important. Reply \"Taken\" when you've taken it.",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "98bb34fe-07d2-4575-a445-e8a4a26b4a92",
+      "name": "Send Follow-up Reminder",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2080,
+        320
+      ],
+      "webhookId": "239561bb-db2b-4cb2-b3d2-a795e5471b30",
+      "credentials": {
+        "telegramApi": {
+          "id": "bfVrxmMpRwDaNLug",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "message",
+              "value": "Medicine already marked as taken",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "46822eb6-8b8b-483d-ad61-7a8a5f422b38",
+      "name": "Already Taken",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2080,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "b909c00a-1243-4fa5-bc3e-784e6d98e7ef",
+      "name": "Telegram Message Received",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        832
+      ],
+      "webhookId": "1f78feab-9a2e-4f23-879b-321ae48bd6e7",
+      "credentials": {
+        "telegramApi": {
+          "id": "bfVrxmMpRwDaNLug",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "taken",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "2103fcad-990b-46a1-b172-1660cfd95929"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7c7ceda9-be69-4979-b7f5-08162e29203d",
+      "name": "Check If Message Is \"Taken\"",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "908721ad-62a9-4db6-a192-636830ed0a4d",
+      "name": "Extract Chat ID",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        384,
+        832
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0",
+          "mode": "list",
+          "cachedResultName": "Medicine Reminder Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Telegram Chat ID",
+              "lookupValue": "={{ $('Extract Chat ID').item.json.chatId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3a97a9a7-f94d-4403-9603-130795ff4196",
+      "name": "Find User Record",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        832
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cYqHst4oXf5ZzOIY",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0",
+          "mode": "list",
+          "cachedResultName": "Medicine Reminder Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit#gid=0"
+        },
+        "columns": {
+          "0": "{",
+          "1": "{",
+          "2": " ",
+          "3": "{",
+          "4": " ",
+          "5": "\"",
+          "6": "m",
+          "7": "a",
+          "8": "p",
+          "9": "p",
+          "10": "i",
+          "11": "n",
+          "12": "g",
+          "13": "M",
+          "14": "o",
+          "15": "d",
+          "16": "e",
+          "17": "\"",
+          "18": ":",
+          "19": " ",
+          "20": "\"",
+          "21": "d",
+          "22": "e",
+          "23": "f",
+          "24": "i",
+          "25": "n",
+          "26": "e",
+          "27": "B",
+          "28": "e",
+          "29": "l",
+          "30": "o",
+          "31": "w",
+          "32": "\"",
+          "33": ",",
+          "34": " ",
+          "35": "\"",
+          "36": "v",
+          "37": "a",
+          "38": "l",
+          "39": "u",
+          "40": "e",
+          "41": "\"",
+          "42": ":",
+          "43": " ",
+          "44": "{",
+          "45": "}",
+          "46": ",",
+          "47": " ",
+          "48": "\"",
+          "49": "m",
+          "50": "a",
+          "51": "t",
+          "52": "c",
+          "53": "h",
+          "54": "i",
+          "55": "n",
+          "56": "g",
+          "57": "C",
+          "58": "o",
+          "59": "l",
+          "60": "u",
+          "61": "m",
+          "62": "n",
+          "63": "s",
+          "64": "\"",
+          "65": ":",
+          "66": " ",
+          "67": "[",
+          "68": "\"",
+          "69": "T",
+          "70": "e",
+          "71": "l",
+          "72": "e",
+          "73": "g",
+          "74": "r",
+          "75": "a",
+          "76": "m",
+          "77": " ",
+          "78": "C",
+          "79": "h",
+          "80": "a",
+          "81": "t",
+          "82": " ",
+          "83": "I",
+          "84": "D",
+          "85": "\"",
+          "86": "]",
+          "87": ",",
+          "88": " ",
+          "89": "\"",
+          "90": "s",
+          "91": "c",
+          "92": "h",
+          "93": "e",
+          "94": "m",
+          "95": "a",
+          "96": "\"",
+          "97": ":",
+          "98": " ",
+          "99": "[",
+          "100": "{",
+          "101": " ",
+          "102": "\"",
+          "103": "i",
+          "104": "d",
+          "105": "\"",
+          "106": ":",
+          "107": " ",
+          "108": "\"",
+          "109": "N",
+          "110": "a",
+          "111": "m",
+          "112": "e",
+          "113": "\"",
+          "114": ",",
+          "115": " ",
+          "116": "\"",
+          "117": "d",
+          "118": "i",
+          "119": "s",
+          "120": "p",
+          "121": "l",
+          "122": "a",
+          "123": "y",
+          "124": "N",
+          "125": "a",
+          "126": "m",
+          "127": "e",
+          "128": "\"",
+          "129": ":",
+          "130": " ",
+          "131": "\"",
+          "132": "N",
+          "133": "a",
+          "134": "m",
+          "135": "e",
+          "136": "\"",
+          "137": ",",
+          "138": " ",
+          "139": "\"",
+          "140": "r",
+          "141": "e",
+          "142": "q",
+          "143": "u",
+          "144": "i",
+          "145": "r",
+          "146": "e",
+          "147": "d",
+          "148": "\"",
+          "149": ":",
+          "150": " ",
+          "151": "f",
+          "152": "a",
+          "153": "l",
+          "154": "s",
+          "155": "e",
+          "156": ",",
+          "157": " ",
+          "158": "\"",
+          "159": "d",
+          "160": "e",
+          "161": "f",
+          "162": "a",
+          "163": "u",
+          "164": "l",
+          "165": "t",
+          "166": "M",
+          "167": "a",
+          "168": "t",
+          "169": "c",
+          "170": "h",
+          "171": "\"",
+          "172": ":",
+          "173": " ",
+          "174": "f",
+          "175": "a",
+          "176": "l",
+          "177": "s",
+          "178": "e",
+          "179": ",",
+          "180": " ",
+          "181": "\"",
+          "182": "d",
+          "183": "i",
+          "184": "s",
+          "185": "p",
+          "186": "l",
+          "187": "a",
+          "188": "y",
+          "189": "\"",
+          "190": ":",
+          "191": " ",
+          "192": "t",
+          "193": "r",
+          "194": "u",
+          "195": "e",
+          "196": ",",
+          "197": " ",
+          "198": "\"",
+          "199": "t",
+          "200": "y",
+          "201": "p",
+          "202": "e",
+          "203": "\"",
+          "204": ":",
+          "205": " ",
+          "206": "\"",
+          "207": "s",
+          "208": "t",
+          "209": "r",
+          "210": "i",
+          "211": "n",
+          "212": "g",
+          "213": "\"",
+          "214": ",",
+          "215": " ",
+          "216": "\"",
+          "217": "c",
+          "218": "a",
+          "219": "n",
+          "220": "B",
+          "221": "e",
+          "222": "U",
+          "223": "s",
+          "224": "e",
+          "225": "d",
+          "226": "T",
+          "227": "o",
+          "228": "M",
+          "229": "a",
+          "230": "t",
+          "231": "c",
+          "232": "h",
+          "233": "\"",
+          "234": ":",
+          "235": " ",
+          "236": "t",
+          "237": "r",
+          "238": "u",
+          "239": "e",
+          "240": ",",
+          "241": " ",
+          "242": "\"",
+          "243": "r",
+          "244": "e",
+          "245": "m",
+          "246": "o",
+          "247": "v",
+          "248": "e",
+          "249": "d",
+          "250": "\"",
+          "251": ":",
+          "252": " ",
+          "253": "f",
+          "254": "a",
+          "255": "l",
+          "256": "s",
+          "257": "e",
+          "258": ",",
+          "259": " ",
+          "260": "\"",
+          "261": "v",
+          "262": "a",
+          "263": "l",
+          "264": "u",
+          "265": "e",
+          "266": "\"",
+          "267": ":",
+          "268": " ",
+          "269": "$",
+          "270": "j",
+          "271": "s",
+          "272": "o",
+          "273": "n",
+          "274": ".",
+          "275": "N",
+          "276": "a",
+          "277": "m",
+          "278": "e",
+          "279": " ",
+          "280": "}",
+          "281": ",",
+          "282": " ",
+          "283": "{",
+          "284": " ",
+          "285": "\"",
+          "286": "i",
+          "287": "d",
+          "288": "\"",
+          "289": ":",
+          "290": " ",
+          "291": "\"",
+          "292": "M",
+          "293": "e",
+          "294": "d",
+          "295": "i",
+          "296": "c",
+          "297": "i",
+          "298": "n",
+          "299": "e",
+          "300": " ",
+          "301": "N",
+          "302": "a",
+          "303": "m",
+          "304": "e",
+          "305": "\"",
+          "306": ",",
+          "307": " ",
+          "308": "\"",
+          "309": "d",
+          "310": "i",
+          "311": "s",
+          "312": "p",
+          "313": "l",
+          "314": "a",
+          "315": "y",
+          "316": "N",
+          "317": "a",
+          "318": "m",
+          "319": "e",
+          "320": "\"",
+          "321": ":",
+          "322": " ",
+          "323": "\"",
+          "324": "M",
+          "325": "e",
+          "326": "d",
+          "327": "i",
+          "328": "c",
+          "329": "i",
+          "330": "n",
+          "331": "e",
+          "332": " ",
+          "333": "N",
+          "334": "a",
+          "335": "m",
+          "336": "e",
+          "337": "\"",
+          "338": ",",
+          "339": " ",
+          "340": "\"",
+          "341": "r",
+          "342": "e",
+          "343": "q",
+          "344": "u",
+          "345": "i",
+          "346": "r",
+          "347": "e",
+          "348": "d",
+          "349": "\"",
+          "350": ":",
+          "351": " ",
+          "352": "f",
+          "353": "a",
+          "354": "l",
+          "355": "s",
+          "356": "e",
+          "357": ",",
+          "358": " ",
+          "359": "\"",
+          "360": "d",
+          "361": "e",
+          "362": "f",
+          "363": "a",
+          "364": "u",
+          "365": "l",
+          "366": "t",
+          "367": "M",
+          "368": "a",
+          "369": "t",
+          "370": "c",
+          "371": "h",
+          "372": "\"",
+          "373": ":",
+          "374": " ",
+          "375": "f",
+          "376": "a",
+          "377": "l",
+          "378": "s",
+          "379": "e",
+          "380": ",",
+          "381": " ",
+          "382": "\"",
+          "383": "d",
+          "384": "i",
+          "385": "s",
+          "386": "p",
+          "387": "l",
+          "388": "a",
+          "389": "y",
+          "390": "\"",
+          "391": ":",
+          "392": " ",
+          "393": "t",
+          "394": "r",
+          "395": "u",
+          "396": "e",
+          "397": ",",
+          "398": " ",
+          "399": "\"",
+          "400": "t",
+          "401": "y",
+          "402": "p",
+          "403": "e",
+          "404": "\"",
+          "405": ":",
+          "406": " ",
+          "407": "\"",
+          "408": "s",
+          "409": "t",
+          "410": "r",
+          "411": "i",
+          "412": "n",
+          "413": "g",
+          "414": "\"",
+          "415": ",",
+          "416": " ",
+          "417": "\"",
+          "418": "c",
+          "419": "a",
+          "420": "n",
+          "421": "B",
+          "422": "e",
+          "423": "U",
+          "424": "s",
+          "425": "e",
+          "426": "d",
+          "427": "T",
+          "428": "o",
+          "429": "M",
+          "430": "a",
+          "431": "t",
+          "432": "c",
+          "433": "h",
+          "434": "\"",
+          "435": ":",
+          "436": " ",
+          "437": "t",
+          "438": "r",
+          "439": "u",
+          "440": "e",
+          "441": ",",
+          "442": " ",
+          "443": "\"",
+          "444": "r",
+          "445": "e",
+          "446": "m",
+          "447": "o",
+          "448": "v",
+          "449": "e",
+          "450": "d",
+          "451": "\"",
+          "452": ":",
+          "453": " ",
+          "454": "f",
+          "455": "a",
+          "456": "l",
+          "457": "s",
+          "458": "e",
+          "459": ",",
+          "460": " ",
+          "461": "\"",
+          "462": "v",
+          "463": "a",
+          "464": "l",
+          "465": "u",
+          "466": "e",
+          "467": "\"",
+          "468": ":",
+          "469": " ",
+          "470": "$",
+          "471": "j",
+          "472": "s",
+          "473": "o",
+          "474": "n",
+          "475": "[",
+          "476": "\"",
+          "477": "M",
+          "478": "e",
+          "479": "d",
+          "480": "i",
+          "481": "c",
+          "482": "i",
+          "483": "n",
+          "484": "e",
+          "485": " ",
+          "486": "N",
+          "487": "a",
+          "488": "m",
+          "489": "e",
+          "490": "\"",
+          "491": "]",
+          "492": " ",
+          "493": "}",
+          "494": ",",
+          "495": " ",
+          "496": "{",
+          "497": " ",
+          "498": "\"",
+          "499": "i",
+          "500": "d",
+          "501": "\"",
+          "502": ":",
+          "503": " ",
+          "504": "\"",
+          "505": "T",
+          "506": "i",
+          "507": "m",
+          "508": "e",
+          "509": "\"",
+          "510": ",",
+          "511": " ",
+          "512": "\"",
+          "513": "d",
+          "514": "i",
+          "515": "s",
+          "516": "p",
+          "517": "l",
+          "518": "a",
+          "519": "y",
+          "520": "N",
+          "521": "a",
+          "522": "m",
+          "523": "e",
+          "524": "\"",
+          "525": ":",
+          "526": " ",
+          "527": "\"",
+          "528": "T",
+          "529": "i",
+          "530": "m",
+          "531": "e",
+          "532": "\"",
+          "533": ",",
+          "534": " ",
+          "535": "\"",
+          "536": "r",
+          "537": "e",
+          "538": "q",
+          "539": "u",
+          "540": "i",
+          "541": "r",
+          "542": "e",
+          "543": "d",
+          "544": "\"",
+          "545": ":",
+          "546": " ",
+          "547": "f",
+          "548": "a",
+          "549": "l",
+          "550": "s",
+          "551": "e",
+          "552": ",",
+          "553": " ",
+          "554": "\"",
+          "555": "d",
+          "556": "e",
+          "557": "f",
+          "558": "a",
+          "559": "u",
+          "560": "l",
+          "561": "t",
+          "562": "M",
+          "563": "a",
+          "564": "t",
+          "565": "c",
+          "566": "h",
+          "567": "\"",
+          "568": ":",
+          "569": " ",
+          "570": "f",
+          "571": "a",
+          "572": "l",
+          "573": "s",
+          "574": "e",
+          "575": ",",
+          "576": " ",
+          "577": "\"",
+          "578": "d",
+          "579": "i",
+          "580": "s",
+          "581": "p",
+          "582": "l",
+          "583": "a",
+          "584": "y",
+          "585": "\"",
+          "586": ":",
+          "587": " ",
+          "588": "t",
+          "589": "r",
+          "590": "u",
+          "591": "e",
+          "592": ",",
+          "593": " ",
+          "594": "\"",
+          "595": "t",
+          "596": "y",
+          "597": "p",
+          "598": "e",
+          "599": "\"",
+          "600": ":",
+          "601": " ",
+          "602": "\"",
+          "603": "s",
+          "604": "t",
+          "605": "r",
+          "606": "i",
+          "607": "n",
+          "608": "g",
+          "609": "\"",
+          "610": ",",
+          "611": " ",
+          "612": "\"",
+          "613": "c",
+          "614": "a",
+          "615": "n",
+          "616": "B",
+          "617": "e",
+          "618": "U",
+          "619": "s",
+          "620": "e",
+          "621": "d",
+          "622": "T",
+          "623": "o",
+          "624": "M",
+          "625": "a",
+          "626": "t",
+          "627": "c",
+          "628": "h",
+          "629": "\"",
+          "630": ":",
+          "631": " ",
+          "632": "t",
+          "633": "r",
+          "634": "u",
+          "635": "e",
+          "636": ",",
+          "637": " ",
+          "638": "\"",
+          "639": "r",
+          "640": "e",
+          "641": "m",
+          "642": "o",
+          "643": "v",
+          "644": "e",
+          "645": "d",
+          "646": "\"",
+          "647": ":",
+          "648": " ",
+          "649": "f",
+          "650": "a",
+          "651": "l",
+          "652": "s",
+          "653": "e",
+          "654": ",",
+          "655": " ",
+          "656": "\"",
+          "657": "v",
+          "658": "a",
+          "659": "l",
+          "660": "u",
+          "661": "e",
+          "662": "\"",
+          "663": ":",
+          "664": " ",
+          "665": "$",
+          "666": "j",
+          "667": "s",
+          "668": "o",
+          "669": "n",
+          "670": ".",
+          "671": "T",
+          "672": "i",
+          "673": "m",
+          "674": "e",
+          "675": " ",
+          "676": "}",
+          "677": ",",
+          "678": " ",
+          "679": "{",
+          "680": " ",
+          "681": "\"",
+          "682": "i",
+          "683": "d",
+          "684": "\"",
+          "685": ":",
+          "686": " ",
+          "687": "\"",
+          "688": "S",
+          "689": "t",
+          "690": "a",
+          "691": "t",
+          "692": "u",
+          "693": "s",
+          "694": "\"",
+          "695": ",",
+          "696": " ",
+          "697": "\"",
+          "698": "d",
+          "699": "i",
+          "700": "s",
+          "701": "p",
+          "702": "l",
+          "703": "a",
+          "704": "y",
+          "705": "N",
+          "706": "a",
+          "707": "m",
+          "708": "e",
+          "709": "\"",
+          "710": ":",
+          "711": " ",
+          "712": "\"",
+          "713": "S",
+          "714": "t",
+          "715": "a",
+          "716": "t",
+          "717": "u",
+          "718": "s",
+          "719": "\"",
+          "720": ",",
+          "721": " ",
+          "722": "\"",
+          "723": "r",
+          "724": "e",
+          "725": "q",
+          "726": "u",
+          "727": "i",
+          "728": "r",
+          "729": "e",
+          "730": "d",
+          "731": "\"",
+          "732": ":",
+          "733": " ",
+          "734": "f",
+          "735": "a",
+          "736": "l",
+          "737": "s",
+          "738": "e",
+          "739": ",",
+          "740": " ",
+          "741": "\"",
+          "742": "d",
+          "743": "e",
+          "744": "f",
+          "745": "a",
+          "746": "u",
+          "747": "l",
+          "748": "t",
+          "749": "M",
+          "750": "a",
+          "751": "t",
+          "752": "c",
+          "753": "h",
+          "754": "\"",
+          "755": ":",
+          "756": " ",
+          "757": "f",
+          "758": "a",
+          "759": "l",
+          "760": "s",
+          "761": "e",
+          "762": ",",
+          "763": " ",
+          "764": "\"",
+          "765": "d",
+          "766": "i",
+          "767": "s",
+          "768": "p",
+          "769": "l",
+          "770": "a",
+          "771": "y",
+          "772": "\"",
+          "773": ":",
+          "774": " ",
+          "775": "t",
+          "776": "r",
+          "777": "u",
+          "778": "e",
+          "779": ",",
+          "780": " ",
+          "781": "\"",
+          "782": "t",
+          "783": "y",
+          "784": "p",
+          "785": "e",
+          "786": "\"",
+          "787": ":",
+          "788": " ",
+          "789": "\"",
+          "790": "s",
+          "791": "t",
+          "792": "r",
+          "793": "i",
+          "794": "n",
+          "795": "g",
+          "796": "\"",
+          "797": ",",
+          "798": " ",
+          "799": "\"",
+          "800": "c",
+          "801": "a",
+          "802": "n",
+          "803": "B",
+          "804": "e",
+          "805": "U",
+          "806": "s",
+          "807": "e",
+          "808": "d",
+          "809": "T",
+          "810": "o",
+          "811": "M",
+          "812": "a",
+          "813": "t",
+          "814": "c",
+          "815": "h",
+          "816": "\"",
+          "817": ":",
+          "818": " ",
+          "819": "t",
+          "820": "r",
+          "821": "u",
+          "822": "e",
+          "823": ",",
+          "824": " ",
+          "825": "\"",
+          "826": "r",
+          "827": "e",
+          "828": "m",
+          "829": "o",
+          "830": "v",
+          "831": "e",
+          "832": "d",
+          "833": "\"",
+          "834": ":",
+          "835": " ",
+          "836": "f",
+          "837": "a",
+          "838": "l",
+          "839": "s",
+          "840": "e",
+          "841": ",",
+          "842": " ",
+          "843": "\"",
+          "844": "v",
+          "845": "a",
+          "846": "l",
+          "847": "u",
+          "848": "e",
+          "849": "\"",
+          "850": ":",
+          "851": " ",
+          "852": "\"",
+          "853": "T",
+          "854": "a",
+          "855": "k",
+          "856": "e",
+          "857": "n",
+          "858": "\"",
+          "859": " ",
+          "860": "}",
+          "861": ",",
+          "862": " ",
+          "863": "{",
+          "864": " ",
+          "865": "\"",
+          "866": "i",
+          "867": "d",
+          "868": "\"",
+          "869": ":",
+          "870": " ",
+          "871": "\"",
+          "872": "T",
+          "873": "e",
+          "874": "l",
+          "875": "e",
+          "876": "g",
+          "877": "r",
+          "878": "a",
+          "879": "m",
+          "880": " ",
+          "881": "C",
+          "882": "h",
+          "883": "a",
+          "884": "t",
+          "885": " ",
+          "886": "I",
+          "887": "D",
+          "888": "\"",
+          "889": ",",
+          "890": " ",
+          "891": "\"",
+          "892": "d",
+          "893": "i",
+          "894": "s",
+          "895": "p",
+          "896": "l",
+          "897": "a",
+          "898": "y",
+          "899": "N",
+          "900": "a",
+          "901": "m",
+          "902": "e",
+          "903": "\"",
+          "904": ":",
+          "905": " ",
+          "906": "\"",
+          "907": "T",
+          "908": "e",
+          "909": "l",
+          "910": "e",
+          "911": "g",
+          "912": "r",
+          "913": "a",
+          "914": "m",
+          "915": " ",
+          "916": "C",
+          "917": "h",
+          "918": "a",
+          "919": "t",
+          "920": " ",
+          "921": "I",
+          "922": "D",
+          "923": "\"",
+          "924": ",",
+          "925": " ",
+          "926": "\"",
+          "927": "r",
+          "928": "e",
+          "929": "q",
+          "930": "u",
+          "931": "i",
+          "932": "r",
+          "933": "e",
+          "934": "d",
+          "935": "\"",
+          "936": ":",
+          "937": " ",
+          "938": "f",
+          "939": "a",
+          "940": "l",
+          "941": "s",
+          "942": "e",
+          "943": ",",
+          "944": " ",
+          "945": "\"",
+          "946": "d",
+          "947": "e",
+          "948": "f",
+          "949": "a",
+          "950": "u",
+          "951": "l",
+          "952": "t",
+          "953": "M",
+          "954": "a",
+          "955": "t",
+          "956": "c",
+          "957": "h",
+          "958": "\"",
+          "959": ":",
+          "960": " ",
+          "961": "t",
+          "962": "r",
+          "963": "u",
+          "964": "e",
+          "965": ",",
+          "966": " ",
+          "967": "\"",
+          "968": "d",
+          "969": "i",
+          "970": "s",
+          "971": "p",
+          "972": "l",
+          "973": "a",
+          "974": "y",
+          "975": "\"",
+          "976": ":",
+          "977": " ",
+          "978": "t",
+          "979": "r",
+          "980": "u",
+          "981": "e",
+          "982": ",",
+          "983": " ",
+          "984": "\"",
+          "985": "t",
+          "986": "y",
+          "987": "p",
+          "988": "e",
+          "989": "\"",
+          "990": ":",
+          "991": " ",
+          "992": "\"",
+          "993": "s",
+          "994": "t",
+          "995": "r",
+          "996": "i",
+          "997": "n",
+          "998": "g",
+          "999": "\"",
+          "1000": ",",
+          "1001": " ",
+          "1002": "\"",
+          "1003": "c",
+          "1004": "a",
+          "1005": "n",
+          "1006": "B",
+          "1007": "e",
+          "1008": "U",
+          "1009": "s",
+          "1010": "e",
+          "1011": "d",
+          "1012": "T",
+          "1013": "o",
+          "1014": "M",
+          "1015": "a",
+          "1016": "t",
+          "1017": "c",
+          "1018": "h",
+          "1019": "\"",
+          "1020": ":",
+          "1021": " ",
+          "1022": "t",
+          "1023": "r",
+          "1024": "u",
+          "1025": "e",
+          "1026": ",",
+          "1027": " ",
+          "1028": "\"",
+          "1029": "r",
+          "1030": "e",
+          "1031": "m",
+          "1032": "o",
+          "1033": "v",
+          "1034": "e",
+          "1035": "d",
+          "1036": "\"",
+          "1037": ":",
+          "1038": " ",
+          "1039": "f",
+          "1040": "a",
+          "1041": "l",
+          "1042": "s",
+          "1043": "e",
+          "1044": ",",
+          "1045": " ",
+          "1046": "\"",
+          "1047": "v",
+          "1048": "a",
+          "1049": "l",
+          "1050": "u",
+          "1051": "e",
+          "1052": "\"",
+          "1053": ":",
+          "1054": " ",
+          "1055": "$",
+          "1056": "j",
+          "1057": "s",
+          "1058": "o",
+          "1059": "n",
+          "1060": "[",
+          "1061": "\"",
+          "1062": "T",
+          "1063": "e",
+          "1064": "l",
+          "1065": "e",
+          "1066": "g",
+          "1067": "r",
+          "1068": "a",
+          "1069": "m",
+          "1070": " ",
+          "1071": "C",
+          "1072": "h",
+          "1073": "a",
+          "1074": "t",
+          "1075": " ",
+          "1076": "I",
+          "1077": "D",
+          "1078": "\"",
+          "1079": "]",
+          "1080": " ",
+          "1081": "}",
+          "1082": "]",
+          "1083": " ",
+          "1084": "}",
+          "1085": " ",
+          "1086": "}",
+          "1087": "}",
+          "mappingMode": "defineBelow",
+          "value": {
+            "Telegram Chat ID": "={{ $json['Telegram Chat ID'] }}",
+            "Name": "={{ $json.Name }}",
+            "Medicine Name": "={{ $json['Medicine Name'] }}",
+            "Time": "={{ $json.Time }}",
+            "Status": "Taken"
+          },
+          "matchingColumns": [
+            "Telegram Chat ID"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Medicine Name",
+              "displayName": "Medicine Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Telegram Chat ID",
+              "displayName": "Telegram Chat ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "92dff92e-45d8-4113-977f-6d6e7e5b7ee9",
+      "name": "Update Status to Taken",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        832
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cYqHst4oXf5ZzOIY",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Extract Chat ID\").item.json.chatId }}",
+        "text": "=✅ Great job! I've marked your medicine as taken. Keep up the good work! 💪",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "49696d6a-764a-41d9-bd3b-4f7dd19b7914",
+      "name": "Send Confirmation",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1056,
+        832
+      ],
+      "webhookId": "66b3eb42-9c49-45ef-978b-2f093a332ea0",
+      "credentials": {
+        "telegramApi": {
+          "id": "bfVrxmMpRwDaNLug",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 21
+            }
+          ]
+        }
+      },
+      "id": "79d5632a-e24d-4f94-946d-c331dd96fec9",
+      "name": "Daily at 9 PM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0",
+          "mode": "list",
+          "cachedResultName": "Medicine Reminder Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14rbX4YqznKJIeQfGIEooNXWEBg3y6OeY61339KWEth0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "ed124633-1243-4d19-a9ac-aa2ac893cded",
+      "name": "Get All Today Records",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        160,
+        1216
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cYqHst4oXf5ZzOIY",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const items = $input.all();\nconst userGroups = {};\n\n// Group by user (Telegram Chat ID)\nitems.forEach(item => {\n  const chatId = item.json['Telegram Chat ID'];\n  const name = item.json.Name;\n  const status = item.json.Status;\n  \n  if (!userGroups[chatId]) {\n    userGroups[chatId] = {\n      name: name,\n      chatId: chatId,\n      total: 0,\n      taken: 0\n    };\n  }\n  \n  userGroups[chatId].total++;\n  if (status === 'Taken') {\n    userGroups[chatId].taken++;\n  }\n});\n\n// Convert to array\nreturn Object.values(userGroups).map(user => ({\n  name: user.name,\n  chatId: user.chatId,\n  taken: user.taken,\n  total: user.total,\n  message: `📊 Daily Summary for ${user.name}:\\n\\nYou took ${user.taken}/${user.total} medicines today.\\n\\n${user.taken === user.total ? '🎉 Perfect! Keep it up!' : '💪 Tomorrow is a new day - you can do it!'}`\n}));"
+      },
+      "id": "8cc754c2-d5ce-4848-bd98-beaef3fed5ef",
+      "name": "Calculate Daily Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId.toString() }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "427b404a-0582-4d98-9f90-66b5b6450b7c",
+      "name": "Send Daily Summary",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        1216
+      ],
+      "webhookId": "a916849e-cf1e-48e5-84ac-2a47f887ec67",
+      "credentials": {
+        "telegramApi": {
+          "id": "bfVrxmMpRwDaNLug",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "56107d7c-c88f-4797-bdf8-154edda59a83",
+      "name": "OpenAI GPT-4o-mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        528
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "EdoOfPdtadjHTVuo",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "Name",
+              "value": "={{ $(\"Check If Time Matches\").item.json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "Medicine Name",
+              "value": "={{ $(\"Check If Time Matches\").item.json[\"Medicine Name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "Telegram Chat ID",
+              "value": "={{ $(\"Check If Time Matches\").item.json[\"Telegram Chat ID\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "4",
+              "name": "row_number",
+              "value": "={{ $(\"Check If Time Matches\").item.json.row_number }}",
+              "type": "number"
+            },
+            {
+              "id": "5",
+              "name": "aiMessage",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d6e2748d-63f9-4164-92db-4a32580831fb",
+      "name": "Merge AI Message With Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        416
+      ]
+    }
+  ],
+  "pinData": {
+    "Every Minute Check": [
+      {
+        "json": {
+          "timestamp": "2026-05-07T22:39:18.004+05:30",
+          "Readable date": "May 7th 2026, 10:39:18 pm",
+          "Readable time": "10:39:18 pm",
+          "Day of week": "Thursday",
+          "Year": "2026",
+          "Month": "May",
+          "Day of month": "07",
+          "Hour": "22",
+          "Minute": "39",
+          "Second": "18",
+          "Timezone": "Asia/Calcutta (UTC+05:30)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Every Minute Check": {
+      "main": [
+        [
+          {
+            "node": "Read Medicine Schedule",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Medicine Schedule": {
+      "main": [
+        [
+          {
+            "node": "Filter Pending Only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Pending Only": {
+      "main": [
+        [
+          {
+            "node": "Check If Time Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Time Matches": {
+      "main": [
+        [
+          {
+            "node": "Generate Personalized Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Personalized Reminder": {
+      "main": [
+        [
+          {
+            "node": "Merge AI Message With Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send First Reminder": {
+      "main": [
+        [
+          {
+            "node": "Wait 10 Minutes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Recheck Status After Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recheck Status After Wait": {
+      "main": [
+        [
+          {
+            "node": "Still Pending?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Still Pending?": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Already Taken",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Message Received": {
+      "main": [
+        [
+          {
+            "node": "Check If Message Is \"Taken\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Message Is \"Taken\"": {
+      "main": [
+        [
+          {
+            "node": "Extract Chat ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Chat ID": {
+      "main": [
+        [
+          {
+            "node": "Find User Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find User Record": {
+      "main": [
+        [
+          {
+            "node": "Update Status to Taken",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status to Taken": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily at 9 PM": {
+      "main": [
+        [
+          {
+            "node": "Get All Today Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Today Records": {
+      "main": [
+        [
+          {
+            "node": "Calculate Daily Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Daily Summary": {
+      "main": [
+        [
+          {
+            "node": "Send Daily Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Personalized Reminder",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge AI Message With Data": {
+      "main": [
+        [
+          {
+            "node": "Send First Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "533adb45-f166-4277-ac23-4024bf78e795",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7f3e73e527f950f3acc2ae40472c01c2d099aeba5dce02f2fb8cc4614f161655"
+  },
+  "id": "mRSDEibJ54KsLi4r",
+  "tags": []
+}

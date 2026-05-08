@@ -38,7 +38,7 @@ The project demonstrates:
 | n8n | Workflow automation |
 | Telegram Bot API | Sending reminders |
 | Google Sheets | Medicine data storage |
-| OpenAI API (optional) | AI-generated messages |
+| OpenAI API | AI-generated messages |
 
 ---
 

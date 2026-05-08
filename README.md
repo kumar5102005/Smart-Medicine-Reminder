@@ -103,19 +103,19 @@ Copy the generated bot token.
 
 Create a sheet with columns:
 
-| Name | Medicine | Time | Status |
-|---|---|---|---|
+| Name | Medicine | Time | Status | Telegram ChatID |
+|---|---|---|---|---|
 
 Example:
 
-| John | Vitamin D | 08:00 AM | Pending |
+| John | Vitamin D | 08:00 AM | Pending | 12345678 |
 
 ---
 
 ## 4️⃣ Import Workflow into n8n
 
 Open n8n and:
-- Import `workflow.json`
+- Import `Smart medicine reminder.json`
 - Add credentials
 - Activate workflow
 
@@ -135,13 +135,13 @@ The workflow logic, scheduling, integrations, and automation implementation were
 # 📸 Screenshots
 
 ## n8n Workflow
-_Add screenshot here_
+![n8n Workflow](screenshots/workflow.png)
 
 ## Telegram Reminder
-_Add screenshot here_
+![Telegram Demo](screenshots/telegram-demo.png)
 
 ## Google Sheets Database
-_Add screenshot here_
+![Google Sheets](screenshots/sheets-data.png)
 
 ---
 

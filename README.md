@@ -185,7 +185,7 @@ The workflow logic, scheduling, integrations, and automation implementation were
 
 ## Click Below to Watch the Full Demo
 
-[▶ Watch Demo Video](Demo-video/demo_video.mp4)
+[▶ Watch Demo Video](https://github.com/user-attachments/assets/072cf631-6077-431a-a6b1-893eb2a64f34)
 
 ---
 

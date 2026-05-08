@@ -67,14 +67,13 @@ Send Follow-up Reminder
 ```text
 smart-medicine-reminder/
 │
-├── workflow.json
+├── smart medicine reminder.json
 ├── README.md
 ├── screenshots/
-│   ├── workflow.png
-│   ├── telegram-demo.png
-│   └── sheets-data.png
-└── docs/
-    └── architecture.png
+    ├── workflow.png
+    ├── telegram-demo.png
+    └── sheets-data.png
+
 ```
 
 ---

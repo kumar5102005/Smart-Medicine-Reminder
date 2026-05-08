@@ -135,13 +135,13 @@ The workflow logic, scheduling, integrations, and automation implementation were
 # 📸 Screenshots
 
 ## n8n Workflow
-![n8n Workflow](screenshots/workflow.png)
+![n8n Workflow](Screenshots/workflow.png)
 
 ## Telegram Reminder
-![Telegram Demo](screenshots/telegram-demo.png)
+![Telegram Demo](Screenshots/telegram-demo.png)
 
 ## Google Sheets Database
-![Google Sheets](screenshots/google-sheets-data.png)
+![Google Sheets](Screenshots/google-sheets-data.png)
 
 ---
 
@@ -172,12 +172,6 @@ The workflow logic, scheduling, integrations, and automation implementation were
 
 ---
 
-# 📜 License
-
-This project is licensed under the MIT License.
-
----
-
 # 🙌 Acknowledgements
 
 - n8n
@@ -200,5 +194,5 @@ https://t.me/YourBotName
 
 # 👨‍💻 Author
 
-Your Name  
-GitHub: @your-github-username
+Phani kumar Vangali  
+GitHub: @kumar5102005

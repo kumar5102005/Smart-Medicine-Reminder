@@ -141,7 +141,7 @@ The workflow logic, scheduling, integrations, and automation implementation were
 ![Telegram Demo](screenshots/telegram-demo.png)
 
 ## Google Sheets Database
-![Google Sheets](screenshots/sheets-data.png)
+![Google Sheets](screenshots/google-sheets-data.png)
 
 ---
 
